@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+h2,h5,#tooltipMsg,p{
+  white-space:nowrap;
+}
+td{
+  border: 1px solid #ccc;
+  height: 50px;
+  text-align: center;
+  font-size: 10pt;
+  padding: 2px;
+}
+</style>
+
+</head>
+<body>
+
+
+<h2>Dynamic table adjacent</h2>
+<table id='tableAct' border="3" width="300">
+<tr>
+  <td> 1 </td>
+  <td> 2 </td>
+</tr>
+</table>
+<input type="button" value="delete first row" id='deleteRow'/>
+<input type="button" value="add a row" id="addRow"/>
+
+
+<script type="text/javascript">
+window.onload=function(){
+  trAct = function(table, num, tr){
+    if(!tr){
+      var _num = table.rows[num];
+      if(_num){
+        table.deleteRow(_num);
+        return true;
+      }
+      else{
+        return false;
+      }
+    }
+    else{
+      var r = table.insertRow(num),
+          i = 0,
+          l = tr.length;
+      for(;i<l;i++){
+        r.insertCell(i).innerHTML = tr[i];
+      }
+      return true;
+    }
+  }
+  
+  var _tableAct = document.getElementById("tableAct");
+  document.getElementById("deleteRow").onclick = function(){
+    trAct(_tableAct, 0);
+  }
+  
+  document.getElementById("addRow").onclick = function(){
+    trAct(_tableAct, 0, ["新格1", "新格2"]);
+  }
+  
+};
+
+</script>
+
+
+</body>
+</html>
