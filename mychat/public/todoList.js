@@ -1,3 +1,5 @@
+var todos = [];
+
 function post(path,params,method){
     method = method || "post";
     var form = document.createElement("form");
@@ -22,13 +24,12 @@ function post(path,params,method){
 
 
 function init_todos(){
-	var todos = [];
+	todos = [];
 	localStorage.setItem('todo', JSON.stringify(todos));
 	show();
 }
 
 function get_todos() {
-    var todos = new Array;
     var todos_str = localStorage.getItem('todo');
     if (todos_str !== null) {
         todos = JSON.parse(todos_str); 
@@ -39,26 +40,36 @@ function get_todos() {
 function add() {
     var task = document.getElementById('task').value;
  	document.getElementById("task").value = "";
-    var todos = get_todos();
+    todos = get_todos();
     todos.push(task);
     localStorage.setItem('todo', JSON.stringify(todos));
     show();
-    post("/MYSQL",{data:task} );
+
+    var stuff = {op:"insert",data:task};
+
+    console.log(stuff);
+    post("/MYSQL",stuff );
 
     return false;
 }
 
 function remove() {
     var id = this.getAttribute('id');
-    var todos = get_todos();
+    var task = todos[id];
+    todos = get_todos();
     todos.splice(id, 1);
+
     localStorage.setItem('todo', JSON.stringify(todos));
     show();
+    var stuff = {op:"delete",data:task};
+
+    console.log(stuff);
+    post("/MYSQL",stuff );
     return false;
 }
  
 function show() {
-    var todos = get_todos();
+    todos = get_todos();
  
     var html = '<ul>';
     for(var i=0; i<todos.length; i++) {
