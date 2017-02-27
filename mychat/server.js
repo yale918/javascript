@@ -3,7 +3,7 @@ const	fs		=	require("fs");
 const	mime	=	require("mime");
 const	path 	=	require("path");
 const	route 	=	require("./lib/route");
-
+const 	mysql 	= 	require("./lib/mysql")
 
 const port = 8000;
 
@@ -27,7 +27,11 @@ server.on("request",function(request,response){
 			//servStatic("./lib/mysql.js",response);
 			route.route(reqPath,request,response);
 
-		}else{
+		}else if(reqPath==='/ajaxtest'){
+			mysql.dbProcess('select','0',response);
+
+		}
+		else{
 			pathString = basePath+reqPath;
 			servStatic(pathString,response);
 		}

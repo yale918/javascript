@@ -85,7 +85,25 @@ function show() {
     };
 }
 
+function ajax(){
+    var data = [];
+    console.log("hello ajax");
+    xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("POST","/ajaxtest",true);
+    xmlhttp.onreadystatechange = function(){
+        if(xmlhttp.readyState==4 && xmlhttp.status==200){
+            var data = JSON.parse(xmlhttp.responseText);
+            for(var i=0;i<data.length;i++){
+                console.log(data[i]);
+            }
+        }
+    }
+    xmlhttp.send();
+}
+
+
 
 document.getElementById('add').addEventListener('click', add);
+document.getElementById('ajax').addEventListener('click', ajax);
 init_todos();
 show();
