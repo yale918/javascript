@@ -14,8 +14,11 @@ function mysqlE(req,res){
         body+=data;
     });
     req.on('end',function(){
+
         postData = querystring.parse(body);
+        console.log("kkk > "+postData);
         const op = postData.op;
+        console.log("ppp > "+op);
         delete postData.op;
         dbProcess(op,postData);
         console.log("[log] "+op+" "+postData.data+" >> MySQL");
@@ -51,16 +54,25 @@ function dbProcess(op,data,res){
         });
     }
     if(op === "select"){
+        var query = 
         connection.query('SELECT * FROM `todolisttb`', function(err, result){
             if(err){
                 console.log(err);
             }
             resultJ = JSON.stringify(result);
-            console.log(resultJ);
+            //console.log(resultJ);
             res.writeHead(200,{"Content-Type":'application/json'});
+
+            for(var i=0;i<500;i++){}
+            for (var i in result){
+                console.log(result[i].data);
+            }
+            //console.log("result= "+resultJ);
             res.write(resultJ);
             res.end();
         });
+
+
     }
 
 
@@ -68,6 +80,10 @@ function dbProcess(op,data,res){
 
     connection.end();
 }
+
+
+
+
 exports.mysqlE = mysqlE;
 exports.dbProcess = dbProcess;
 
