@@ -1,6 +1,7 @@
 var todos = [];
 var xmlhttp = new XMLHttpRequest();
-var tempStuff = {};
+var insertStuff = "";
+var deleteStuff = "";
 function post(path,params,method){
     method = method || "post";
     var form = document.createElement("form");
@@ -13,77 +14,55 @@ function post(path,params,method){
             hiddenField.setAttribute("type", "hidden");
             hiddenField.setAttribute("name", key);
             hiddenField.setAttribute("value",params[key]);
-
             form.appendChild(hiddenField);
         }
     }
-
     document.body.append(form);
     form.submit();
 }
 
 function remove() {
+    //console.log("11111");
     var id = this.getAttribute('id');
     var task = todos[id].data;
-    //console.log(task);
-
-    var stuff = {op:"delete",data:task};
-
-    //console.log(stuff);
-    post("/MYSQL",stuff );
-    show(function(){
+    deleteStuff = "op="+"delete"+"&data="+task;
+    show("/MYSQL",deleteStuff,function(){
         recAjax(function(){
             render();
         });
     });
-    //return false;
 }
 
 function add(callback) {
+    //console.log("11111");
     var task = document.getElementById('task').value;
     document.getElementById("task").value = "";
-
-    var stuff = {op:"insert",data:task};
-    tempStuff = stuff;
-    //post("/MYSQL",stuff );
-    console.log("11111");
+    insertStuff = "op="+"insert"+"&data="+task;
     callback();
 }
 
 function show(reqType,data,callback) {
+    //console.log("22222");
     xmlhttp.open("POST",reqType,true);
-    console.log("22222");
-    //console.log({op:"insert"});
-    xmlhttp.setRequestHeader("Content-type", "application/json");
-    var params = "lorem=ipsum&name=binny";
-    xmlhttp.send({op:"insert", data:"kkk"});
-
+    xmlhttp.send(data);
     callback(); 
 }   
 
 function recAjax(callback){
+    //console.log("33333");
     xmlhttp.onreadystatechange = function(){
         if(xmlhttp.readyState==4 && xmlhttp.status==200){
             todos = JSON.parse(xmlhttp.responseText);
-            console.log("33333");
-            console.log(todos.length);
             callback();
-            
-            for(var i=0;i<todos.length;i++){
-                //console.log(todos[i]);
-            }
-
         }
          
     }
 }
 
 function render(){
-    console.log("44444");
-    //console.log("2222"+todos);
+    //console.log("44444");
     document.getElementById('todos').innerHTML = "";
     var html = '<ul>';
-    //console.log("todos="+todos);
     for(var i=0; i<todos.length; i++) {
         html += '<li>' + todos[i].data + '<button class="remove" id="' + i  + '">x</button></li>';
     };
@@ -100,7 +79,7 @@ function render(){
 
 document.getElementById('add').addEventListener('click', function(){
     add(function(){
-        show("/MYSQL",tempStuff,function(){
+        show("/MYSQL",insertStuff,function(){
             recAjax(function(){
                 render();
             });
@@ -108,9 +87,7 @@ document.getElementById('add').addEventListener('click', function(){
     });
 });
 
-
-document.getElementById('ajax').addEventListener('click', ajax);
-show("/ajaxtest"," ",function(){
+show("/selectDB"," ",function(){
     recAjax(function(){
         render();
     });

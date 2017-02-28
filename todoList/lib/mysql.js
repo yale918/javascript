@@ -3,8 +3,6 @@ var my      = require("mysql");
 var mime    = require("mime");
 var querystring = require("querystring");
 
-
-
 function mysqlE(req,res){
     var postData ={};
     var testData ={};
@@ -14,21 +12,14 @@ function mysqlE(req,res){
         body+=data;
     });
     req.on('end',function(){
-
         postData = querystring.parse(body);
-        console.log("kkk > "+postData);
-        const op = postData.op;
-        console.log("ppp > "+op);
+         const op = postData.op;
         delete postData.op;
-        dbProcess(op,postData);
-        console.log("[log] "+op+" "+postData.data+" >> MySQL");
+        dbProcess(op,postData,res);
     });
-
 }
 
-
 function dbProcess(op,data,res){
-    //console.log(data);
     var connection = my.createConnection({
         host:'localhost',
         user:'yale918',
@@ -38,20 +29,24 @@ function dbProcess(op,data,res){
 
     connection.connect();
 
-    //console.log("op= "+op);
     if(op === "insert"){
+        console.log("[client] request /MYSQL > "+op+" "+data.data);
         //console.log("in insert");
         connection.query('INSERT INTO `todolisttb` SET ?', data, function(err){
             if(err)
-            console.log(err);
+                console.log(err);
         });
+        selectDB(connection,res);
+
     }
     if(op === "delete"){
+        console.log("[client] request /MYSQL > "+op+" "+data.data);
         //console.log("in delete");
         connection.query('DELETE FROM `todolisttb` WHERE ?', data, function(err){
             if(err)
             console.log(err);
         });
+        selectDB(connection,res);
     }
     if(op === "select"){
         var query = 
@@ -59,30 +54,30 @@ function dbProcess(op,data,res){
             if(err){
                 console.log(err);
             }
-            resultJ = JSON.stringify(result);
+            var resultJ = JSON.stringify(result);
             //console.log(resultJ);
             res.writeHead(200,{"Content-Type":'application/json'});
-
-            for(var i=0;i<500;i++){}
-            for (var i in result){
-                console.log(result[i].data);
-            }
-            //console.log("result= "+resultJ);
             res.write(resultJ);
             res.end();
         });
 
 
     }
-
-
-
-
     connection.end();
 }
 
+function selectDB(conn,res){
+    conn.query('SELECT * FROM `todolisttb`', function(err, result){
+            if(err){
+                console.log(err);
+            }
+            var resultJ = JSON.stringify(result);
+            res.writeHead(200,{"Content-Type":'application/json'});
 
-
+            res.write(resultJ);
+            res.end();
+        });
+}
 
 exports.mysqlE = mysqlE;
 exports.dbProcess = dbProcess;

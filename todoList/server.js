@@ -16,7 +16,7 @@ server.on("request",function(request,response){
 	var reqPath = request.url;
 	var method  = request.method;
 	var pathString = "";
-	console.log("[client] request for: "+request.url);
+	
 
 	if(reqPath==="/"){
 		pathString = basePath+"/index.html";          //OKKKKKKKKKK
@@ -27,7 +27,7 @@ server.on("request",function(request,response){
 			//servStatic("./lib/mysql.js",response);
 			route.route(reqPath,request,response);
 
-		}else if(reqPath==='/ajaxtest'){
+		}else if(reqPath==='/selectDB'){
 			mysql.dbProcess('select','0',response);
 
 		}
@@ -44,7 +44,6 @@ server.listen(port, function(){
 	console.log("[log] mychat server running on port: "+port);
 })
 
-
 function servStatic(filepath,res){
 	//console.log("[log]serving file: "+filepath);
 	var dataType = mime.lookup(path.basename(filepath));
@@ -57,7 +56,6 @@ function servStatic(filepath,res){
 	});
 }
 
-
 function sendResponse(res,data,dataType){
 	//console.log("dataType: "+dataType);
 	res.writeHead(200,{'Content-Type':dataType});
@@ -67,7 +65,7 @@ function sendResponse(res,data,dataType){
 
 function sendErrorMessage(errCode,res){
 	if(errCode == 404){
-		res.writeHead(errCode,{'Content-Type':'text/plain'});
+		res.writeHead(errCode,{'Content-Type':'tenxt/plain'});
 		console.log("in sendErrorMessage");
 		res.write('Error '+errCode+': resource not found.')
 		res.end();
