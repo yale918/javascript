@@ -1,0 +1,15 @@
+{
+  "name": "nodejs-crawler",
+  "version": "1.0.0",
+  "description": "nodejs-crawler",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "author": "yale918",
+  "license": "MIT",
+  "dependencies": {
+    "cheerio": "^0.22.0",
+    "request": "^2.81.0"
+  }
+}
